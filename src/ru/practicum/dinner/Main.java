@@ -1,5 +1,5 @@
 package ru.practicum.dinner;
-
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -36,30 +36,54 @@ public class Main {
     }
 
     private static void addNewDish() {
+
         System.out.println("Введите тип блюда:");
         String dishType = scanner.nextLine();
         System.out.println("Введите название блюда:");
         String dishName = scanner.nextLine();
-
-        // добавьте новое блюдо
+        dc.addDish(dishType, dishName);
     }
 
     private static void generateDishCombo() {
+
+        if (dc.isEmptyDishMenu()) { // проверка что меню не пустое
+            System.out.println("Меню пустое. Сначала добавьте в меню блюда");
+            return;
+        }
+
         System.out.println("Начинаем конструировать обед...");
 
         System.out.println("Введите количество наборов, которые нужно сгенерировать:");
         int numberOfCombos = scanner.nextInt();
+        while (numberOfCombos <= 0) {
+            System.out.println("Количесво наборов не может быть меньше или рано 0, введите заново: ");
+            numberOfCombos = scanner.nextInt();
+        }
+
         scanner.nextLine();
 
         System.out.println("Вводите типы блюда, разделяя символом переноса строки (enter). Для завершения ввода введите пустую строку");
         String nextItem = scanner.nextLine();
-
-        //реализуйте ввод типов блюд
+        //ввод типов блюд
+        ArrayList<String> itemList = new ArrayList<>();
         while (!nextItem.isEmpty()) {
-
+            if (dc.checkDishType(nextItem)) {  // проверка что такой тип блюда есть в меню
+                itemList.add(nextItem);
+            } else {
+                System.out.println("Такого типа блюда нет в меню, добавьте другое");
+            }
+            nextItem = scanner.nextLine();
         }
 
-        // сгенерируйте комбинации блюд и выведите на экран
+        ArrayList<ArrayList<String>> combo = dc.getComboOfDish(itemList, numberOfCombos);
+
+        for (int i = 0; i < combo.size(); i++) {
+            System.out.println("Комбо " + (i + 1));
+            System.out.println(combo.get(i));
+        }
 
     }
+
+
 }
+
